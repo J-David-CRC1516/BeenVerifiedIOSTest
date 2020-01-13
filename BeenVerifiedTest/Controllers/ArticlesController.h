@@ -17,7 +17,10 @@ NS_ASSUME_NONNULL_BEGIN
 -(void) addDescription: (NSString*)text;
 -(void) addAuthor: (NSString*)text;
 -(void) addDate: (NSString*)text;
+-(void) addImage: (NSString*)url;
 
 @end
+
+
 
 NS_ASSUME_NONNULL_END

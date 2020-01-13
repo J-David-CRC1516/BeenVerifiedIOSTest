@@ -21,6 +21,8 @@
 
 @implementation ArticlesController
 
+NSString *webLink;
+
 -(instancetype) initWithCoder:(NSCoder *)aDecoder{
     self = [super initWithCoder: aDecoder];
     
@@ -64,5 +66,32 @@
 -(void) addDate: (NSString*)text{
     _dateLabel.text = text;
 }
+
+-(void) addImage: (NSString*)url{
+    dispatch_queue_t imageQueue = dispatch_queue_create("Image Queue",NULL);
+    url = [url stringByReplacingOccurrencesOfString:@".com" withString:@".com/fit-in/500x/filters:autojpg()"];
+    
+    @try{
+        dispatch_async(imageQueue, ^{
+            
+            NSData * imageData = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString: url]];
+            
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                    
+                if([[NSFileManager defaultManager] fileExistsAtPath:url]){
+                    self->_articleImage.image = [UIImage imageNamed:@"UIBarButtonSystemItemCamera"];
+                }else{
+                    self->_articleImage.image = [UIImage imageWithData: imageData];
+                }
+            });
+        });
+        
+        }
+    @catch(NSException *exception){
+        self->_articleImage.image = [UIImage imageNamed:@"UIBarButtonSystemItemCamera"];
+    }
+}
+
+
 
 @end
